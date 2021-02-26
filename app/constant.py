@@ -1,0 +1,1 @@
+BASE_URL = 'https://lms.unikom.ac.id'

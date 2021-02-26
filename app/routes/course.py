@@ -3,56 +3,15 @@ import re
 
 import requests
 from bs4 import BeautifulSoup
-from fastapi import FastAPI, HTTPException
-from pydantic import BaseModel
-from starlette.responses import Response, HTMLResponse, JSONResponse
+from fastapi import HTTPException
+from fastapi.routing import APIRouter
 
-app = FastAPI()
-BASE_URL = 'https://lms.unikom.ac.id'
+from app.constant import BASE_URL
 
-
-class LoginModel(BaseModel):
-    username: str
-    password: str
+router = APIRouter()
 
 
-@app.post('/login')
-def login(item: LoginModel):
-    session_requests = requests.session()
-    login_url = BASE_URL + "/login/index.php"
-    result = session_requests.get(login_url)
-
-    # Mendapatkan token XSRF
-    soup = BeautifulSoup(result.text, 'html.parser')
-    authenticity_token = soup.find('input', {'name': 'logintoken'}).get('value')
-
-    payload = {
-        "logintoken": authenticity_token,
-        "username": item.username,
-        "password": item.password,
-    }
-
-    session_requests.post(
-        login_url,
-        data=payload,
-        headers=dict(referer=login_url)
-    )
-
-    cookies = session_requests.cookies['MoodleSession']
-    return cookies
-
-
-@app.get('/instance/file/{id}')
-def get_file(id, cookies: str):
-    cookies = {'MoodleSession', cookies}
-    url = BASE_URL + '/mod/resource/view.php?id=' + id
-    res = requests.get(url, cookies={'MoodleSession': cookies}, stream=True)
-    if res.headers.get('Content-Disposition'):
-        file = res.content
-        return Response(file, headers=dict(res.headers))
-
-
-@app.get('/courses/{id}')
+@router.get('/{id}')
 def get_course(id, cookies: str):
     try:
         cookies = {'MoodleSession': cookies}
@@ -91,7 +50,7 @@ def get_course(id, cookies: str):
         raise HTTPException(status_code=401, detail={'error_message': 'Autentikasi salah'})
 
 
-@app.get('/courses')
+@router.get('/')
 def get_courses(cookies):
     try:
         cookies = {'MoodleSession': cookies}
@@ -135,9 +94,3 @@ def get_courses(cookies):
         return data
     except requests.exceptions.TooManyRedirects:
         raise HTTPException(status_code=401, detail={'error_message': 'Autentikasi salah'})
-
-
-@app.get('/')
-def index():
-    body = {'Hello': 'World'}
-    return body
