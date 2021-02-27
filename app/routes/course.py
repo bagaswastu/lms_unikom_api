@@ -5,7 +5,6 @@ import requests
 from bs4 import BeautifulSoup
 from fastapi import HTTPException
 from fastapi.routing import APIRouter
-from starlette.responses import HTMLResponse
 
 from app.constant import BASE_URL
 
@@ -19,13 +18,11 @@ def get_course(id, cookies: str):
 
         url = BASE_URL + '/course/view.php?id=' + id
         res = requests.get(url, cookies=cookies)
-        # return HTMLResponse(res.text)
         soup = BeautifulSoup(res.text, 'html.parser')
         containers = soup.select('.activity')
 
         data = []
         for container in containers:
-            # return len(containers)
             # filter restricted content
             restriction = container.select('.tag-info')
             if len(restriction) > 0:
@@ -38,7 +35,6 @@ def get_course(id, cookies: str):
             description = ''
             if len(description_dirty) > 0:
                 description = description_dirty[0].text
-
 
             # kondisi untuk id
             id = ''
