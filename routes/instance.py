@@ -4,7 +4,7 @@ from fastapi import HTTPException
 from fastapi.routing import APIRouter
 from starlette.responses import Response
 
-from app.constant import BASE_URL
+from constant import BASE_URL
 
 router = APIRouter()
 

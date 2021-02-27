@@ -6,7 +6,7 @@ from bs4 import BeautifulSoup
 from fastapi import HTTPException
 from fastapi.routing import APIRouter
 
-from app.constant import BASE_URL
+from constant import BASE_URL
 
 router = APIRouter()
 

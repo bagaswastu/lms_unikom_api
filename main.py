@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 
-from app.routes import course, instance, authentication
+from routes import course, authentication, instance
 
 app = FastAPI(title="LMS UNIKOM API")
 

@@ -4,8 +4,8 @@ import requests
 from bs4 import BeautifulSoup
 from fastapi import APIRouter
 
-from app.constant import BASE_URL, API_URL, API_KEY
-from app.schemas import LoginModel
+from constant import BASE_URL, API_URL, API_KEY
+from schemas import LoginModel
 
 router = APIRouter()
 
