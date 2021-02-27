@@ -5,6 +5,7 @@ import requests
 from bs4 import BeautifulSoup
 from fastapi import HTTPException
 from fastapi.routing import APIRouter
+from starlette.responses import HTMLResponse
 
 from app.constant import BASE_URL
 
@@ -18,31 +19,38 @@ def get_course(id, cookies: str):
 
         url = BASE_URL + '/course/view.php?id=' + id
         res = requests.get(url, cookies=cookies)
-
+        # return HTMLResponse(res.text)
         soup = BeautifulSoup(res.text, 'html.parser')
         containers = soup.select('.activity')
+
         data = []
         for container in containers:
-
+            # return len(containers)
             # filter restricted content
             restriction = container.select('.tag-info')
             if len(restriction) > 0:
                 continue
 
+
+
             instance_name = container.select('.instancename')[0].text
-            instance_type = container.select('.instancename > span')[0].text.strip()
+
             id_dirty = container.select('.activityinstance > a')
 
             # kondisi untuk id
+            id = ''
+            type = ''
             if len(id_dirty) > 0:
-                id_dirty = container.select('.activityinstance > a')[0]['href']
-                id = re.search(r'=([^&?]*)', id_dirty).group(1)
-            else:
-                id = ''
+                url = container.select('.activityinstance > a')[0]['href']
+                id = re.search(r'=([^&?]*)', url).group(1)
+
+                # mendapatkan tipe instance dari url
+                type = re.search(r'/mod/(.+)/', url).group(1)
+
             data.append({
                 'id': id,
                 'instance_name': instance_name,
-                'instance_type': instance_type,
+                'instance_type': type,
             })
 
         return data
