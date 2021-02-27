@@ -1,8 +1,10 @@
+import json
+
 import requests
 from bs4 import BeautifulSoup
 from fastapi import APIRouter
 
-from app.constant import BASE_URL
+from app.constant import BASE_URL, API_URL, API_KEY
 from app.schemas import LoginModel
 
 router = APIRouter()
@@ -31,4 +33,20 @@ def login(item: LoginModel):
     )
 
     cookies = session_requests.cookies['MoodleSession']
-    return cookies
+
+    # Mendapatkan token dari api unikom
+    payload = {'Dashboard-Api-Key': API_KEY}
+    body = {
+        'nim': item.username,
+        'password': item.password
+    }
+    res = requests.post(API_URL + '/dashboard/public/api/login', headers=payload, data=body)
+
+    token = ''
+    if res.status_code == 200:
+        token = json.loads(res.text)['token']
+
+    return {
+        'cookies': cookies,
+        'token': token,
+    }
