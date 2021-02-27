@@ -100,6 +100,7 @@ def get_courses(cookies):
                 'semester': semester,
                 'progress': progress,
             })
+
         return data
     except requests.exceptions.TooManyRedirects:
         raise HTTPException(status_code=401, detail={'error_message': 'Autentikasi salah'})
