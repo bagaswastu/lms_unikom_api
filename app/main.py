@@ -4,9 +4,9 @@ from app.routes import course, instance, authentication
 
 app = FastAPI(title="LMS UNIKOM API")
 
-app.include_router(course.router, tags=['courses'])
-app.include_router(instance.router, tags=['instances'])
-app.include_router(authentication.router)
+app.include_router(course.router, tags=['Courses'], prefix='/courses')
+app.include_router(instance.router, tags=['Instances'], prefix='/instances')
+app.include_router(authentication.router, tags=['Authentication'])
 
 
 @app.get('/')

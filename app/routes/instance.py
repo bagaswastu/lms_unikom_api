@@ -7,7 +7,7 @@ from app.constant import BASE_URL
 router = APIRouter()
 
 
-@router.get('/instance/file/{id}', description="Untuk download file materi dari mata kuliah")
+@router.get('/file/{id}', description="Untuk download file materi dari mata kuliah")
 async def get_file(id, cookies: str):
     cookies = {'MoodleSession', cookies}
     url = BASE_URL + '/mod/resource/view.php?id=' + id
