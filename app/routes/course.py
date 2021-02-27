@@ -31,10 +31,7 @@ def get_course(id, cookies: str):
             if len(restriction) > 0:
                 continue
 
-
-
             instance_name = container.select('.instancename')[0].text
-
             id_dirty = container.select('.activityinstance > a')
 
             # kondisi untuk id
@@ -90,6 +87,7 @@ def get_courses(cookies):
             lecturer = ''
             if len(meta) > 1:
                 semester = meta[0]
+                course_name = meta[1]
                 lecturer = meta[2]
 
             data.append({
