@@ -1,4 +1,5 @@
 import requests
+from bs4 import BeautifulSoup
 from fastapi import HTTPException
 from fastapi.routing import APIRouter
 from starlette.responses import Response
@@ -8,7 +9,21 @@ from app.constant import BASE_URL
 router = APIRouter()
 
 
-@router.get('/url/{id}', description='Digunakan untuk mendapatkan URL instance dari mata kuliah')
+@router.get('/forum/{id}', description='Digunakan untuk mendapatkan konten forum')
+def get_forum(id, cookies):
+    cookies = {'MoodleSession': cookies}
+    url = BASE_URL + '/mod/forum/view.php?id=' + id
+    res = requests.get(url, cookies=cookies)
+    soup = BeautifulSoup(res.text, 'html.parser')
+    title = soup.select_one('h2').text
+    content = soup.select_one('.no-overflow').text
+    return {
+        'title': title,
+        'content': content,
+    }
+
+
+@router.get('/url/{id}', description='Digunakan untuk mendapatkan URL instance')
 def get_url(id, cookies):
     try:
         cookies = {'MoodleSession': cookies}
