@@ -33,6 +33,12 @@ def get_course(id, cookies: str):
 
             instance_name = container.select('.instancename')[0].text
             id_dirty = container.select('.activityinstance > a')
+            description_dirty = container.select('.contentafterlink')
+            # kondisi untuk deskripsi
+            description = ''
+            if len(description_dirty) > 0:
+                description = description_dirty[0].text
+
 
             # kondisi untuk id
             id = ''
@@ -46,8 +52,9 @@ def get_course(id, cookies: str):
 
             data.append({
                 'id': id,
-                'instance_name': instance_name,
-                'instance_type': type,
+                'name': instance_name,
+                'type': type,
+                'description':description
             })
 
         return data
